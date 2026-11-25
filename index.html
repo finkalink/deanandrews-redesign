@@ -540,20 +540,30 @@ function setZoom(on){
 $('#lbImg').addEventListener('click',()=>setZoom(!$('#lb').classList.contains('zoom')));
 $('#lbZoom').onclick=()=>setZoom(!$('#lb').classList.contains('zoom'));
 $('#lbImg').addEventListener('load',()=>setZoom(false));
-// Scale drawing: the painting at true size next to a 5′6″ figure
+// Scale drawing: the painting at true size next to a 5′8″ figure
 function scaleSVG(x){
   const m=(x.s||'').match(/([\d.]+)″\s*×\s*([\d.]+)″/);if(!m)return '';
   const a=+m[1],b=+m[2],img=$('#lbImg'),r=img.naturalWidth?img.naturalWidth/img.naturalHeight:b/a;
   const H=r<1?Math.max(a,b):Math.min(a,b),W=r<1?Math.min(a,b):Math.max(a,b);
-  const P=66,bottom=Math.max(6,57-H/2),top=Math.max(bottom+H,P)+6,gap=16,w=22+gap+W+4;
+  // Painting's top edge sits level with the top of the head (66″). A painting taller than
+  // the person can't hang lower than the floor, so it stands on the floor instead.
+  const P=68,FW=22*68/66,bottom=H<=P?P-H:0,top=Math.max(bottom+H,P)+4,gap=14,w=FW+gap+W+2;
   const y=v=>top-v; // inches from floor -> svg y
-  return `<svg viewBox="0 0 ${w} ${top}" width="${Math.min(260,w*2.2)}" role="img" aria-label="${esc(x.t)} shown at scale beside a 5 foot 6 inch person">
+  return `<svg viewBox="0 0 ${w} ${top}" width="${Math.min(260,w*2.2)}" role="img" aria-label="${esc(x.t)} shown at scale beside a 5 foot 8 inch person">
     <line x1="0" y1="${top}" x2="${w}" y2="${top}" stroke="#5a534c" stroke-width=".6"/>
-    <g fill="#8f877d"><circle cx="11" cy="${y(P-4.5)}" r="4.5"/><path d="M4 ${y(57)} q7 -3 14 0 l2 26 h-3 l-1 -14 l-1 0 l0 45 h-4 l-1 -30 h-1 l-1 30 h-4 l0 -45 l-1 0 l-1 14 h-3 z"/></g>
-    <image href="${x.img}" x="${22+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" preserveAspectRatio="none"/>
-    <rect x="${22+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" fill="none" stroke="#5a534c" stroke-width=".5"/>
-  </svg><small>Shown to scale beside a 5′6″ person</small>`;
+    <g fill="#8f877d" stroke="#8f877d" stroke-width=".8" stroke-linejoin="round" transform="translate(0 ${y(P)}) scale(${P/66})">${FIGURE}</g>
+    <image href="${x.img}" x="${FW+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" preserveAspectRatio="none"/>
+    <rect x="${FW+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" fill="none" stroke="#5a534c" stroke-width=".5"/>
+  </svg><small>${H<=P?'To scale beside a 5′8″ person, tops aligned':'To scale beside a 5′8″ person; taller than the figure, so shown standing on the floor'}</small>`;
 }
+// Standing human silhouette, 66″ tall × 22″ wide, drawn in inches (scaled to 68″ where used) with y=0 at the top of the head.
+// Right half is listed once and mirrored for the left so the figure is symmetric.
+const FIGURE=(()=>{
+  const half=[[12.3,8.4],[12.6,10.4],[15.5,11.4],[18.2,12.2],[19.6,13.6],[20.3,16.5],[20.6,22],[20.7,28],[20.5,33],[20.7,36.2],[20.3,38.6],[19.2,39],[18.6,37.4],[18.7,33.5],[18.6,28],[18.3,22.5],[17.4,18.6],[17,23],[16.6,28.5],[16.2,31.5],[16.9,35.5],[16.8,42],[16.2,50],[15.8,56],[15.4,61],[15.6,63.6],[17.2,64.8],[17.2,66],[12.3,66],[12.3,63.4],[12.4,57],[12.2,49],[11.8,42],[11,39.4]];
+  const left=half.slice(0,-1).reverse().map(([x,yy])=>[22-x,yy]);
+  const pts=half.concat(left).map(([x,yy])=>x.toFixed(1)+' '+yy.toFixed(1));
+  return `<ellipse cx="11" cy="4.4" rx="3.3" ry="4.2"/><path d="M${pts.join(' L')} Z"/>`;
+})();
 function showLB(){const x=L[li];$('#lb').classList.remove('zoom');$('#lbImg').src=x.img;$('#lbImg').alt=x.t;$('#lbEye').textContent=lname;$('#lbTitle').textContent=x.t;
   const drawScale=()=>{$('#lbScale').innerHTML=scaleSVG(x)};$('#lbImg').complete?drawScale():$('#lbImg').addEventListener('load',drawScale,{once:true});
   $('#lbD').textContent=[x.s,x.m].filter(Boolean).join(' · ');
