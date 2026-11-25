@@ -28,7 +28,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(246,243,238,.92);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
 header.scrolled{border-color:var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
-.mark{font-family:var(--serif);font-size:26px;letter-spacing:.22em;text-decoration:none;font-weight:500}
+.mark{white-space:nowrap;font-family:var(--serif);font-size:26px;letter-spacing:.22em;text-decoration:none;font-weight:500}
 .nav ul{display:flex;gap:30px;list-style:none}
 .nav ul a{text-decoration:none;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s}
 .nav ul a:hover{color:var(--ink)}
@@ -49,11 +49,20 @@ header.scrolled{border-color:var(--line)}
 .hero p{color:var(--muted);max-width:420px;font-size:17px}
 .hero .cta{display:inline-block;margin-top:22px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:3px}
 @media(max-width:820px){.hero-text{grid-template-columns:1fr;gap:20px}}
-.strip{display:flex;gap:10px;overflow-x:auto;padding:0 32px 8px;scroll-snap-type:x mandatory;scrollbar-width:thin}
-.strip figure{flex:0 0 auto;scroll-snap-align:start;cursor:zoom-in}
-.strip img{height:min(52vh,460px);width:auto;background:var(--line)}
-.strip figcaption{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:.04em}
-@media(max-width:640px){.strip{padding:0 16px 8px}.strip img{height:300px}}
+/* Studio slideshow: full-bleed crossfade */
+.slides{position:relative;height:min(64vh,640px);min-height:280px;overflow:hidden;background:var(--ink)}
+.slides img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);transition:opacity 1.4s ease,transform 7s ease-out}
+.slides img.on{opacity:1;transform:scale(1)}
+.slides .ctrl{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,253,249,.82);color:var(--ink);font-size:20px;cursor:pointer;opacity:0;transition:opacity .3s,background .2s}
+.slides:hover .ctrl,.slides .ctrl:focus-visible{opacity:1}
+.slides .ctrl:hover{background:var(--paper)}
+.slides .prev{left:max(16px,env(safe-area-inset-left,0px))}
+.slides .next{right:max(16px,env(safe-area-inset-right,0px))}
+.slides .dots{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:10px}
+.slides .dots button{width:9px;height:9px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.9);background:transparent;cursor:pointer;transition:background .3s}
+.slides .dots button.on{background:#fff}
+@media(max-width:640px){.slides{height:46vh}.slides .ctrl{display:none}}
+@media(prefers-reduced-motion:reduce){.slides img{transition:opacity .6s ease;transform:none}.slides img.on{transform:none}}
 
 section{padding:110px 0}
 @media(max-width:640px){section{padding:72px 0}}
@@ -196,7 +205,15 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
         <a class="cta" href="#works">View the work ↓</a>
       </div>
     </div>
-    <div class="strip" id="heroStrip"></div>
+    <div class="slides" id="slides" role="region" aria-roledescription="slideshow" aria-label="In the studio">
+      <img class="on" src="img/uploads/2016/02/Brushes.jpg" alt="Well-used paintbrushes on the studio table">
+      <img src="img/uploads/2016/02/Jars.jpg" alt="Jars of acrylic paint with color swatches on the lids">
+      <img src="img/uploads/2016/02/Max-2.jpg" alt="Max the cat walking across a painting in progress" loading="lazy">
+      <img src="img/uploads/2016/02/Oil-Pastels-1.jpg" alt="A tray of oil pastels" loading="lazy">
+      <button class="ctrl prev" aria-label="Previous photo">←</button>
+      <button class="ctrl next" aria-label="Next photo">→</button>
+      <div class="dots"></div>
+    </div>
   </div>
 
   <section id="works">
@@ -388,11 +405,23 @@ const INSTALL=[
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-// Hero strip: Solstice + Spring canvases
-const solstice=SERIES.find(s=>s.id==='solstice').works;
-const heroWorks=[solstice[1],solstice[3],solstice[0],solstice[9],solstice[6],solstice[10],solstice[2],solstice[11]];
-$('#heroStrip').innerHTML=heroWorks.map((x,i)=>`<figure data-i="${i}"><img src="${x.img}" alt="${esc(x.t)}" loading="${i<4?'eager':'lazy'}"><figcaption>${esc(x.t)}, Solstice</figcaption></figure>`).join('');
-$('#heroStrip').addEventListener('click',e=>{const f=e.target.closest('figure');if(f)openLB(heroWorks,+f.dataset.i,'Solstice')});
+// Studio slideshow: advances every 5s, pauses on hover/focus or when the tab is hidden
+(()=>{
+  const box=$('#slides'), imgs=[...box.querySelectorAll('img')], dots=box.querySelector('.dots');
+  dots.innerHTML=imgs.map((_,i)=>`<button aria-label="Photo ${i+1}"${i?'':' class="on"'}></button>`).join('');
+  let i=0, timer=null, paused=false;
+  const go=n=>{i=(n+imgs.length)%imgs.length;imgs.forEach((im,k)=>im.classList.toggle('on',k===i));[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i))};
+  const start=()=>{clearInterval(timer);timer=setInterval(()=>{if(!paused&&!document.hidden)go(i+1)},5000)};
+  box.querySelector('.prev').onclick=()=>{go(i-1);start()};
+  box.querySelector('.next').onclick=()=>{go(i+1);start()};
+  dots.onclick=e=>{const k=[...dots.children].indexOf(e.target);if(k>=0){go(k);start()}};
+  box.addEventListener('mouseenter',()=>paused=true);box.addEventListener('mouseleave',()=>paused=false);
+  box.addEventListener('focusin',()=>paused=true);box.addEventListener('focusout',()=>paused=false);
+  let x0=null;
+  box.addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  box.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){go(i+(dx<0?1:-1));start()}x0=null});
+  start();
+})();
 
 // Series grid
 $('#seriesGrid').innerHTML=SERIES.map(s=>{
