@@ -161,10 +161,14 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
 .filters button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .sv-head{padding:56px 0 40px}
 .sv-head p{color:var(--muted);max-width:680px;font-size:17px}
-.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:44px 28px;padding-bottom:100px}
-.work{cursor:zoom-in}
-.work .frame{background:var(--paper);aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:18px;border:1px solid var(--line)}
-.work .frame img{max-height:100%;width:auto;max-width:100%;object-fit:contain;box-shadow:0 6px 18px rgba(40,30,20,.12)}
+/* Works: justified rows. Every painting shares one row height (--h), so a 96″ × 30″ canvas
+   is shown as tall as the row instead of shrunk into a square. --r = width/height, set per image. */
+.works{--h:clamp(260px,58vh,560px);display:flex;flex-wrap:wrap;gap:44px 28px;padding-bottom:100px}
+.works::after{content:"";flex:999 1 0}
+.work{--r:.8;flex:var(--r) 1 calc(var(--r)*var(--h));min-width:min(200px,100%);max-width:100%;cursor:zoom-in}
+.work .frame{background:var(--paper);width:100%;aspect-ratio:var(--r);max-height:var(--h);min-height:160px;display:flex;align-items:center;justify-content:center;padding:14px;border:1px solid var(--line)}
+.work .frame img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(40,30,20,.14))}
+@media(max-width:640px){.works{--h:min(64svh,520px);gap:32px 14px}.work{min-width:min(140px,100%)}.work .frame{padding:8px}.work h5{font-size:17px}}
 .work h5{font-family:var(--serif);font-weight:500;font-size:20px;margin-top:12px;line-height:1.15}
 .work .d{font-size:13px;color:var(--muted)}
 .work .p{font-size:13px;margin-top:4px;font-weight:600}
@@ -174,8 +178,18 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
 /* Lightbox */
 .lb{position:fixed;inset:0;z-index:60;background:rgba(20,17,14,.96);display:none;grid-template-columns:1fr 340px;color:#efe7dc}
 .lb.open{display:grid}
-.lb .stage{display:flex;align-items:center;justify-content:center;padding:40px;min-height:0}
-.lb .stage img{max-height:calc(100vh - 80px);max-width:100%;object-fit:contain}
+.lb .stage{position:relative;display:flex;align-items:center;justify-content:center;padding:40px;min-height:0;overflow:hidden}
+.lb .stage img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+/* Zoomed: the painting fills the stage's short side and you scroll along its length */
+.lb.zoom .stage{display:block;overflow:auto;padding:0;overscroll-behavior:contain}
+.lb.zoom .stage img{max-width:none;max-height:none;cursor:zoom-out;margin:0 auto;display:block}
+.lb.zoom.tall .stage img{width:100%;height:auto}
+.lb.zoom.wide .stage img{height:100%;width:auto}
+.lb .zoomhint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(20,17,14,.75);color:#efe7dc;border:1px solid #5a534c;font:inherit;font-size:12px;letter-spacing:.08em;padding:7px 14px;border-radius:20px;cursor:pointer;white-space:nowrap}
+.lb.zoom .zoomhint{position:fixed;bottom:18px;left:auto;right:calc(340px + 18px);transform:none}
+.lb .scale{margin-top:14px}
+.lb .scale svg{display:block;max-width:100%;height:auto}
+.lb .scale small{display:block;color:#8f877d;font-size:12px;margin-top:6px}
 .lb aside{padding:56px 36px;border-left:1px solid #3a342e;display:flex;flex-direction:column;gap:10px}
 .lb aside h3{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1.1}
 .lb aside .d{color:#b5aa9c;font-size:14px}
@@ -184,7 +198,19 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
 .lb .arrows{display:flex;gap:10px;margin-top:auto}
 .lb .arrows button{flex:1;background:none;border:1px solid #5a534c;color:#efe7dc;padding:10px;cursor:pointer;font:inherit}
 .lb .btn:hover{background:#efe7dc;color:#2a211b}
-@media(max-width:820px){.lb{grid-template-columns:1fr;grid-template-rows:1fr auto}.lb aside{border-left:0;border-top:1px solid #3a342e;padding:20px 16px}.lb .stage{padding:48px 16px 8px}.lb .stage img{max-height:55vh}.lb aside h3{font-size:24px}}
+@media(max-width:820px){
+  /* Phone/tablet: the painting gets almost the whole screen; details compress into a short strip */
+  .lb{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .lb .stage{padding:52px 10px 10px}
+  .lb aside{border-left:0;border-top:1px solid #3a342e;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+  .lb aside .eyebrow,.lb .scale{display:none}
+  .lb aside h3{font-size:19px;grid-column:1}
+  .lb aside .d{grid-column:1;font-size:12px}
+  .lb aside .p{grid-column:2;grid-row:1;margin:0;font-size:16px;text-align:right}
+  .lb aside .btn{grid-column:1/-1;margin-top:8px;padding:10px;text-align:center}
+  .lb .arrows{grid-column:1/-1;margin-top:6px}
+  .lb.zoom .zoomhint{right:18px}
+}
 
 @media(prefers-reduced-motion:reduce){.series-view{transition:none}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
@@ -340,13 +366,14 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
 <!-- Lightbox -->
 <div class="lb" id="lb" role="dialog" aria-modal="true">
   <button class="x" id="lbX" aria-label="Close">×</button>
-  <div class="stage"><img id="lbImg" alt=""></div>
+  <div class="stage" id="lbStage"><img id="lbImg" alt=""><button class="zoomhint" id="lbZoom">Zoom in</button></div>
   <aside>
     <div class="eyebrow" id="lbEye" style="color:#d79b6a"></div>
     <h3 id="lbTitle"></h3>
     <div class="d" id="lbD"></div>
     <div class="p" id="lbP"></div>
     <a class="btn" id="lbAsk" href="#">Inquire about this piece</a>
+    <div class="scale" id="lbScale"></div>
     <div class="arrows"><button id="lbPrev">←</button><button id="lbNext">→</button></div>
   </aside>
 </div>
@@ -485,8 +512,11 @@ function openSeries(s){
   document.body.style.overflow='hidden';
 }
 function shown(){return cur.works.filter(x=>filter==='all'||x.p!=='SOLD')}
+// Each painting's real shape (width ÷ height), learned as images load, drives the row layout
+const RATIO={};
+function setRatio(img){if(!img.naturalWidth)return;const r=+(img.naturalWidth/img.naturalHeight).toFixed(3);RATIO[img.getAttribute('src')]=r;img.closest('.work').style.setProperty('--r',r)}
 function renderWorks(){
-  $('#svWorks').innerHTML=shown().map((x,i)=>`<div class="work" data-i="${i}"><div class="frame"><img src="${x.img}" alt="${esc(x.t)}" loading="lazy"></div>
+  $('#svWorks').innerHTML=shown().map((x,i)=>`<div class="work" data-i="${i}"${RATIO[x.img]?` style="--r:${RATIO[x.img]}"`:''}><div class="frame"><img src="${x.img}" alt="${esc(x.t)}" decoding="async" onload="setRatio(this)"></div>
    <h5>${esc(x.t)}</h5><div class="d">${esc(x.s)} · ${esc(x.m)}</div><div class="p ${x.p==='SOLD'?'sold':''}">${x.p==='SOLD'?'Sold':esc(x.p)}</div></div>`).join('');
 }
 $('#svWorks').addEventListener('click',e=>{const f=e.target.closest('.work');if(f)openLB(shown(),+f.dataset.i,cur.name)});
@@ -500,7 +530,32 @@ $('#svBack').onclick=leaveSeries;
 // Lightbox
 let L=[],li=0,lname='';
 function openLB(list,i,name){L=list;li=i;lname=name;showLB();$('#lb').classList.add('open')}
-function showLB(){const x=L[li];$('#lbImg').src=x.img;$('#lbImg').alt=x.t;$('#lbEye').textContent=lname;$('#lbTitle').textContent=x.t;
+// Zoom: tall paintings fill the width and scroll down; wide ones fill the height and scroll across
+function setZoom(on){
+  const lb=$('#lb'),img=$('#lbImg'),r=img.naturalWidth/img.naturalHeight||1;
+  lb.classList.toggle('zoom',on);lb.classList.toggle('tall',r<1);lb.classList.toggle('wide',r>=1);
+  $('#lbZoom').textContent=on?'Fit to screen':(r<1?'Zoom in · scroll down':'Zoom in · scroll across');
+  $('#lbStage').scrollTop=0;$('#lbStage').scrollLeft=0;
+}
+$('#lbImg').addEventListener('click',()=>setZoom(!$('#lb').classList.contains('zoom')));
+$('#lbZoom').onclick=()=>setZoom(!$('#lb').classList.contains('zoom'));
+$('#lbImg').addEventListener('load',()=>setZoom(false));
+// Scale drawing: the painting at true size next to a 5′6″ figure
+function scaleSVG(x){
+  const m=(x.s||'').match(/([\d.]+)″\s*×\s*([\d.]+)″/);if(!m)return '';
+  const a=+m[1],b=+m[2],img=$('#lbImg'),r=img.naturalWidth?img.naturalWidth/img.naturalHeight:b/a;
+  const H=r<1?Math.max(a,b):Math.min(a,b),W=r<1?Math.min(a,b):Math.max(a,b);
+  const P=66,bottom=Math.max(6,57-H/2),top=Math.max(bottom+H,P)+6,gap=16,w=22+gap+W+4;
+  const y=v=>top-v; // inches from floor -> svg y
+  return `<svg viewBox="0 0 ${w} ${top}" width="${Math.min(260,w*2.2)}" role="img" aria-label="${esc(x.t)} shown at scale beside a 5 foot 6 inch person">
+    <line x1="0" y1="${top}" x2="${w}" y2="${top}" stroke="#5a534c" stroke-width=".6"/>
+    <g fill="#8f877d"><circle cx="11" cy="${y(P-4.5)}" r="4.5"/><path d="M4 ${y(57)} q7 -3 14 0 l2 26 h-3 l-1 -14 l-1 0 l0 45 h-4 l-1 -30 h-1 l-1 30 h-4 l0 -45 l-1 0 l-1 14 h-3 z"/></g>
+    <image href="${x.img}" x="${22+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" preserveAspectRatio="none"/>
+    <rect x="${22+gap}" y="${y(bottom+H)}" width="${W}" height="${H}" fill="none" stroke="#5a534c" stroke-width=".5"/>
+  </svg><small>Shown to scale beside a 5′6″ person</small>`;
+}
+function showLB(){const x=L[li];$('#lb').classList.remove('zoom');$('#lbImg').src=x.img;$('#lbImg').alt=x.t;$('#lbEye').textContent=lname;$('#lbTitle').textContent=x.t;
+  const drawScale=()=>{$('#lbScale').innerHTML=scaleSVG(x)};$('#lbImg').complete?drawScale():$('#lbImg').addEventListener('load',drawScale,{once:true});
   $('#lbD').textContent=[x.s,x.m].filter(Boolean).join(' · ');
   $('#lbP').textContent=x.p==='SOLD'?'Sold':x.p;
   const ask=$('#lbAsk');ask.style.display=x.p?'':'none';
@@ -508,7 +563,7 @@ function showLB(){const x=L[li];$('#lbImg').src=x.img;$('#lbImg').alt=x.t;$('#lb
   ask.href='mailto:deanandrews@deanandrews.com?subject='+encodeURIComponent('Inquiry: '+x.t);}
 $('#lbPrev').onclick=()=>{li=(li-1+L.length)%L.length;showLB()};
 $('#lbNext').onclick=()=>{li=(li+1)%L.length;showLB()};
-$('#lbX').onclick=()=>$('#lb').classList.remove('open');
+$('#lbX').onclick=()=>$('#lb').classList.remove('open','zoom');
 document.addEventListener('keydown',e=>{
   if($('#lb').classList.contains('open')){if(e.key==='Escape')$('#lb').classList.remove('open');if(e.key==='ArrowLeft')$('#lbPrev').click();if(e.key==='ArrowRight')$('#lbNext').click();}
   else if(e.key==='Escape'&&$('#sv').classList.contains('open'))leaveSeries();
