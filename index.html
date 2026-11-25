@@ -63,7 +63,7 @@ h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4vw,54px);line-
 
 /* Series grid */
 .series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:40px 28px;margin-top:56px}
-.card{cursor:pointer;background:none;border:0;text-align:left;font:inherit;color:inherit}
+.card{display:block;cursor:pointer;background:none;border:0;text-align:left;font:inherit;color:inherit;text-decoration:none}
 .card .img{aspect-ratio:4/5;overflow:hidden;background:var(--line)}
 .card img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .card:hover img{transform:scale(1.04)}
@@ -215,7 +215,7 @@ footer{background:var(--ink);color:#8f877d;font-size:12px;padding:28px 0;border-
         <div class="eyebrow">Newest series</div>
         <h2>Rhapsody in Browns</h2>
         <p class="lede">After decades with a broad palette, Andrews challenged herself to explore simply the color brown. Not so simple. Tree bark, rocks, coffee, chocolate, her cat Mimi: the possibilities became infinite. These canvases are worked with crushed cacao beans, each holding an array of browns inside and out.</p>
-        <button class="btn" data-open="rhapsody">See the series</button>
+        <a class="btn" href="#rhapsody-in-browns">See the series</a>
       </div>
     </div>
   </section>
@@ -328,7 +328,7 @@ const U='img/uploads/';
 const w=(t,s,m,p,img)=>({t,s,m,p,img});
 
 const SERIES=[
- {id:'rhapsody',name:'Rhapsody in Browns',year:'2023',isNew:true,cover:U+'2023/04/Assorted_crppd-for-WORKS-page_Rhapsody-in-Browns.jpg',
+ {id:'rhapsody-in-browns',name:'Rhapsody in Browns',year:'2023',isNew:true,cover:U+'2023/04/Assorted_crppd-for-WORKS-page_Rhapsody-in-Browns.jpg',
   desc:'An exploration of a single color, brown, in acrylic with crushed cacao beans on canvas.',
   works:[['Charmed','1_DEAN-ANDREWS_15_Charmed_58x36_Acrylic-with-cacao-on-canvas.jpeg'],['Allured','1_DEAN-ANDREWS_16_Allured_58x36_Acrylic-with-cacao-on-canvas.jpeg'],['Comforted','1_DEAN-ANDREWS_17_Comforted_58x36_Acrylic-with-cacao-on-canvas.jpeg'],['Satisfied','1_DEAN-ANDREWS_12_Satisfied_58x36_Acrylic-with-cacao-on-canvas.jpeg'],['Attracted','1_DEAN-ANDREWS_13_Attracted_58x36_Acrylic-with-cacao-on-canvas-with-grommets.jpeg'],['Captivated','DEAN-ANDREWS_14_Captivated_58x36_Acrylic-with-cacao-on-canvas-with-grommets.jpeg'],['Tempted','DEAN-ANDREWS_9_Tempted_640.jpg'],['Enamored','DEAN-ANDREWS_10_Enamored_640.jpg'],['Obsessed','DEAN-ANDREWS_8_Obsessed_640.jpg']]
    .map(([t,f])=>w(t,'58″ × 36″','Acrylic with cacao on canvas','$5,000',B+'rhapsody-2-1/'+f))},
@@ -337,7 +337,7 @@ const SERIES=[
   works:[['You Must Believe in Spring','1_You-Must-Believe-in-Spring_96x30_Acrylic-on-canvas.jpg'],['Lullaby of Springtime','2_Lullaby-of-Springtime_96x30_Acrylic-on-canvas.jpg'],['Rustle of Spring','3_Rustle-of-Spring_96x30_Acrylic-on-canvas.jpg'],['It Might As Well Be Spring','4_It-Might-As-Well-Be-Spring_96x30_AAcrylic-on-canvas.jpg'],['Spring Can Really Hang You Up','5_Spring-Can-Really-Hang-You-Up_96x30_Acrylic-on-canvas.jpg']]
    .map(([t,f])=>w(t,'96″ × 30″','Acrylic on canvas','$9,200',B+'rustle-of-spring/'+f))
    .concat([['I','$975'],['II','SOLD'],['III','SOLD'],['IV','SOLD'],['V','SOLD']].map(([n,p])=>w('Rite of Spring '+n,'12″ × 12″','Acrylic on canvas',p,B+'rustle-square/Rite-of-Spring-'+n+'_12x12_Acrylic-on-canvas.jpg')))},
- {id:'blackbirds',name:'Red-winged Blackbirds',year:'2015',cover:U+'2016/02/Thirteen-Ways-of-Looking-at-a-Red-winged-Blackbird_5_For-WORKS-page.jpg',
+ {id:'red-winged-blackbirds',name:'Red-winged Blackbirds',year:'2015',cover:U+'2016/02/Thirteen-Ways-of-Looking-at-a-Red-winged-Blackbird_5_For-WORKS-page.jpg',
   desc:'Breaking out of abstraction, Andrews works representationally in a dialogue with Wallace Stevens’ “Thirteen Ways of Looking at a Blackbird.”',
   works:[[9,'$9,200'],[10,'$9,200'],[11,'SOLD'],[12,'$9,200'],[13,'SOLD'],[3,'$9,200'],[4,'$9,200'],[5,'SOLD'],[6,'SOLD'],[7,'$9,200'],[8,'$9,200'],[2,'$9,200']]
    .map(([n,p])=>w('Thirteen Ways of Looking at a Red-winged Blackbird '+n,'102″ × 30″','Acrylic on canvas',p,B+'redwingedblackbirds/Thirteen-Ways-of-Looking-at-a-Red-winged-Blackbird_'+n+'.jpg'))},
@@ -345,14 +345,14 @@ const SERIES=[
   desc:'Gesture and structure, expansiveness and restraint. Each painting is keyed to a single color, shimmering with others hidden in the brushstrokes.',
   works:[['Flushed','SOLD'],['Indulged','$5,000'],['Enticed','$5,000'],['Contented','$5,000'],['Tickled','SOLD'],['Entranced','SOLD'],['Charmed','$5,000'],['Enchanted_NoFlash','SOLD'],['Enraptured','SOLD'],['Astonished','$5,000'],['Impressed','$5,000'],['Challenged','$5,000']]
    .map(([t,p])=>w(t.replace('_NoFlash',''),'58″ × 36″','Acrylic with glass microspheres on canvas',p,B+'solstice-test-gallery-900h/'+t+'-58x36_900H.jpg'))},
- {id:'clouds',name:'Cloud Abstractions',year:'2023',cover:U+'2023/04/Breaking-Through_crppd-for-WORKS-page_Cloud-Abstractions.jpg',
+ {id:'cloud-abstractions',name:'Cloud Abstractions',year:'2023',cover:U+'2023/04/Breaking-Through_crppd-for-WORKS-page_Cloud-Abstractions.jpg',
   desc:'Small works on mylar that use the sky as a point of departure, moving between minimalism and a more expanded painterly language.',
   works:[['Above and Beyond','4.5″ × 6.5″','SOLD','Above-and-Beyond_4.5x6.5_Acrylic-on-mylar_SOLD-1.jpg'],['Above the Bay','4.5″ × 6.5″','SOLD','Above-the-Bay_4.5x6.4_Acrylic-on-mylar_SOLD.jpg'],['Above the Break','10.5″ × 13.5″','$1,100','Above-the-Break_10.5x13.5_Acrylic-on-mylar-1.jpg'],['At the Isthmus','4.5″ × 6.5″','$250','At-the-Ismus_4.5x6.5_Acrylic-on-mylar.jpg'],['Beyond the Beach','7.25″ × 9.25″','$525','Beyond-the-Beach_7.25x9.25_Acrylic-on-mylar-1.jpg'],['Over the Cove','4.5″ × 6.5″','SOLD','Over-the-Cove_4.5x6.5_Acrylic-on-mylar_SOLD-1.jpg'],['Over the Rainbow','10.5″ × 13.5″','SOLD','Over-the-Rainbow_10.5x13.5_Acrylic-on-mylar.jpg'],['Passing By','4.5″ × 6.5″','$250','Passing-By_4.5x6.5_Acrylic-on-mylar-1.jpg'],['Tinge of Twilight','10.5″ × 13.5″','$1,100','Tinge-of-Twilight_10.5x13.5_Acrylic-on-mylar-1.jpg'],['Up and Above','4.5″ × 6.5″','$250','Up-and-Above_4.5x6.5_Acrylic-on-mylar.jpg']]
    .map(([t,s,p,f])=>w(t,s,'Acrylic on mylar',p,B+'cloud-abstractions-1/'+f))},
  {id:'summer',name:'Summer',year:'',cover:U+'2023/04/Summer-I_crppd-for-WORKS-page_Summer.jpg',
   desc:'Works on archival paper, framed in white at 20″ × 20″.',
   works:['I','II','III','IV','V','VI','VII','VIII','IX','X'].map(n=>w('Summer '+n,'18″ × 18″','Acrylic on archival paper, framed','$1,800',B+'summer-gallery/Summer-'+n+'.jpg'))},
- {id:'translux',name:'Trans Lux',year:'2001',cover:U+'2015/03/trans-lux.jpg',
+ {id:'trans-lux',name:'Trans Lux',year:'2001',cover:U+'2015/03/trans-lux.jpg',
   desc:'A realm where picture becomes object: compact paintings with granular, subtly lustrous surfaces of glass microspheres on linen.',
   works:[w('Lux Dialis I','72″ × 48″','Acrylic, graphite, glass microspheres on linen','SOLD',B+'lux-dialis/LuxDialis-1-72x48_600x400.jpg'),w('Lux Dialis II','72″ × 48″','Acrylic, graphite, glass microspheres on linen','SOLD',B+'lux-dialis/LuxDialis-2-72x48_600x400.jpg')]
    .concat([['22','TransLux_22.jpg'],['25','TransLux_25.jpg'],['26','TransLux_26.jpg']].map(([n,f])=>w('Trans Lux '+n,'8.5″ × 8.5″','Acrylic, graphite, glass microspheres on linen','$725',B+'trans-lux-gallery-1/'+f)))
@@ -400,7 +400,7 @@ $('#seriesGrid').innerHTML=SERIES.map(s=>{
   const inner=`<div class="img"><img src="${s.cover}" alt="" loading="lazy"></div>
   <h3>${esc(s.name)}${s.isNew?'<span class="new">New</span>':''}</h3>
   <div class="meta">${n?`${n} works · ${av} available`:'View on current site ↗'}</div>`;
-  return s.link?`<a class="card" href="${s.link}" target="_blank" rel="noopener" style="text-decoration:none">${inner}</a>`:`<button class="card" data-open="${s.id}">${inner}</button>`}).join('');
+  return s.link?`<a class="card" href="${s.link}" target="_blank" rel="noopener">${inner}</a>`:`<a class="card" href="#${s.id}">${inner}</a>`}).join('');
 
 // Feature pics
 const rh=SERIES[0].works;
@@ -411,14 +411,24 @@ $('#featurePics').addEventListener('click',e=>{if(e.target.dataset.i)openLB(rh,+
 $('#installGrid').innerHTML=INSTALL.map((x,i)=>`<figure class="reveal" data-i="${i}"><img src="${x.img}" alt="${esc(x.t)}" loading="lazy"><figcaption><b>${esc(x.t)}</b>${esc(x.l)}</figcaption></figure>`).join('');
 $('#installGrid').addEventListener('click',e=>{const f=e.target.closest('figure');if(f)openLB(INSTALL.map(x=>({t:x.t,s:x.l,m:'',p:'',img:x.img})),+f.dataset.i,'Installation')});
 
-// Series view
-let cur=null, filter='all';
-document.addEventListener('click',e=>{
-  const b=e.target.closest('[data-open]'); if(!b)return;
-  openSeries(SERIES.find(x=>x.id===b.dataset.open));
-});
+// Series view: each series has its own link (#red-winged-blackbirds etc.)
+let cur=null, filter='all', cameFromPage=false;
+const BASE_TITLE=document.title;
+function route(){
+  const s=SERIES.find(x=>!x.link&&'#'+x.id===location.hash);
+  if(s){ if(cur!==s||!$('#sv').classList.contains('open'))openSeries(s); }
+  else if($('#sv').classList.contains('open')){
+    closeSeries();
+    const t=location.hash&&document.querySelector(location.hash);
+    if(t&&location.hash!=='#top')t.scrollIntoView({behavior:'instant'});
+  }
+}
+// Clicking a series link inside the page: remember that Back can return here
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&SERIES.some(x=>'#'+x.id===a.getAttribute('href')))cameFromPage=true});
+addEventListener('hashchange',route);
 function openSeries(s){
   cur=s;filter='all';
+  document.title=s.name+' · '+BASE_TITLE;
   $('#svEye').textContent='Series'+(s.year?' · '+s.year:'');
   $('#svTitle').textContent=s.name;$('#svDesc').textContent=s.desc;
   renderWorks();
@@ -434,8 +444,10 @@ function renderWorks(){
 $('#svWorks').addEventListener('click',e=>{const f=e.target.closest('.work');if(f)openLB(shown(),+f.dataset.i,cur.name)});
 $('#svFilters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;
   document.querySelectorAll('#svFilters button').forEach(x=>x.classList.toggle('on',x===b));renderWorks()});
-function closeSeries(){$('#sv').classList.remove('open');$('#sv').setAttribute('aria-hidden','true');document.body.style.overflow=''}
-$('#svBack').onclick=closeSeries;
+function closeSeries(){$('#sv').classList.remove('open');$('#sv').setAttribute('aria-hidden','true');document.body.style.overflow='';document.title=BASE_TITLE;$('#lb').classList.remove('open')}
+// "All series": go back if we came from the page, otherwise land on the Works section
+function leaveSeries(){ if(cameFromPage){cameFromPage=false;history.back()} else location.hash='works' }
+$('#svBack').onclick=leaveSeries;
 
 // Lightbox
 let L=[],li=0,lname='';
@@ -451,8 +463,9 @@ $('#lbNext').onclick=()=>{li=(li+1)%L.length;showLB()};
 $('#lbX').onclick=()=>$('#lb').classList.remove('open');
 document.addEventListener('keydown',e=>{
   if($('#lb').classList.contains('open')){if(e.key==='Escape')$('#lb').classList.remove('open');if(e.key==='ArrowLeft')$('#lbPrev').click();if(e.key==='ArrowRight')$('#lbNext').click();}
-  else if(e.key==='Escape'&&$('#sv').classList.contains('open'))closeSeries();
+  else if(e.key==='Escape'&&$('#sv').classList.contains('open'))leaveSeries();
 });
+route();
 
 // Header + menu + reveal
 addEventListener('scroll',()=>$('#hdr').classList.toggle('scrolled',scrollY>10),{passive:true});
